@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Satvik's Dashboard — Portfolio</title>
+
+  <!-- Lucide icons — pinned version -->
+  <script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.min.js"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Reset & base ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #020617;
+      --sky:     #38bdf8;
+      --emerald: #10b981;
+      --surface: rgba(15,23,42,0.7);
+      --border:  rgba(56,189,248,0.12);
+    }
+
+    body {
+      background: var(--bg);
+      font-family: 'JetBrains Mono', monospace;
+      color: #cbd5e1;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-size: 14px;
+    }
+
+    /* grid background */
+    body::before {
+      content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(56,189,248,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(56,189,248,.03) 1px,transparent 1px);
+      background-size:40px 40px;
+    }
+    body::after {
+      content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+      background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(56,189,248,.07),transparent);
+    }
+
+    /* ── Layout helpers ─────────────────────────────────── */
+    .wrap       { max-width:1200px; margin:0 auto; padding:0 20px; }
+    .grid-3     { display:grid; grid-template-columns:1fr; gap:20px; }
+    .grid-5     { display:grid; grid-template-columns:1fr; gap:20px; }
+    .flex       { display:flex; }
+    .flex-col   { flex-direction:column; }
+    .items-center    { align-items:center; }
+    .items-start     { align-items:flex-start; }
+    .justify-between { justify-content:space-between; }
+    .justify-center  { justify-content:center; }
+    .flex-wrap  { flex-wrap:wrap; }
+    .gap-2      { gap:8px; }
+    .gap-3      { gap:12px; }
+    .gap-4      { gap:16px; }
+    .gap-5      { gap:20px; }
+    .grid-cols-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .grid-cols-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+    .w-full     { width:100%; }
+    .flex-1     { flex:1; }
+    .shrink-0   { flex-shrink:0; }
+    .ml-auto    { margin-left:auto; }
+    .text-center{ text-align:center; }
+    .hidden     { display:none; }
+    .relative   { position:relative; }
+    .sticky     { position:sticky; }
+    .top-0      { top:0; }
+    .z-50       { z-index:50; }
+    .z-10       { position:relative; z-index:10; }
+    .overflow-hidden { overflow:hidden; }
+    .overflow-x-auto { overflow-x:auto; }
+
+    @media(min-width:768px) {
+      .grid-3   { grid-template-columns:1fr 1fr; }
+      .md-show  { display:block; }
+    }
+    @media(min-width:1024px) {
+      .grid-3   { grid-template-columns:1fr 1fr 1fr; }
+      .grid-5   { grid-template-columns:3fr 2fr; }
+    }
+
+    /* ── Spacing ────────────────────────────────────────── */
+    .p-3  { padding:12px; }
+    .p-5  { padding:20px; }
+    .px-4 { padding-left:16px; padding-right:16px; }
+    .py-3 { padding-top:12px;  padding-bottom:12px; }
+    .py-6 { padding-top:24px;  padding-bottom:24px; }
+    .pt-4 { padding-top:16px; }
+    .pt-16{ padding-top:64px; }
+    .pb-10{ padding-bottom:40px; }
+    .pb-20{ padding-bottom:80px; }
+    .mt-1 { margin-top:4px; }
+    .mt-4 { margin-top:16px; }
+    .mt-5 { margin-top:20px; }
+    .mt-6 { margin-top:24px; }
+    .mb-1 { margin-bottom:4px; }
+    .mb-2 { margin-bottom:8px; }
+    .mb-4 { margin-bottom:16px; }
+    .mb-5 { margin-bottom:20px; }
+    .mb-6 { margin-bottom:24px; }
+    .mb-8 { margin-bottom:32px; }
+    .mx-1 { margin-left:4px; margin-right:4px; }
+    .my-4 { margin-top:16px; margin-bottom:16px; }
+    .space-y > * + * { margin-top:10px; }
+    .space-y-sm > * + *{ margin-top:6px; }
+
+    /* ── Typography ─────────────────────────────────────── */
+    .text-xs   { font-size:.72rem; }
+    .text-sm   { font-size:.85rem; }
+    .text-base { font-size:1rem; }
+    .text-lg   { font-size:1.125rem; }
+    .text-xl   { font-size:1.35rem; }
+    .text-2xl  { font-size:1.5rem; }
+    .text-5xl  { font-size:2.8rem; }
+    .font-bold      { font-weight:700; }
+    .font-semibold  { font-weight:600; }
+    .font-extrabold { font-weight:800; }
+    .leading-tight  { line-height:1.2; }
+    .leading-relaxed{ line-height:1.6; }
+    .tracking-wide  { letter-spacing:.04em; }
+    .tracking-widest{ letter-spacing:.1em; }
+    .uppercase      { text-transform:uppercase; }
+    .no-underline   { text-decoration:none; }
+
+    /* font-syne */
+    .font-syne { font-family:'Syne',sans-serif; }
+
+    /* ── Colors ─────────────────────────────────────────── */
+    .text-white   { color:#fff; }
+    .text-sky     { color:var(--sky); }
+    .text-emerald { color:var(--emerald); }
+    .text-purple  { color:#a78bfa; }
+    .text-orange  { color:#f97316; }
+    .text-yellow  { color:#fbbf24; }
+    .text-red     { color:#f87171; }
+    .text-muted   { color:#64748b; }
+    .text-slate-4 { color:#94a3b8; }
+    .text-slate-5 { color:#64748b; }
+    .text-slate-6 { color:#475569; }
+
+    /* ── Glass card ─────────────────────────────────────── */
+    .glass {
+      background:var(--surface);
+      border:1px solid var(--border);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      border-radius:12px;
+      transition:border-color .25s, box-shadow .25s, transform .2s;
+    }
+    .glass:hover {
+      border-color:rgba(56,189,248,.28);
+      box-shadow:0 0 32px rgba(56,189,248,.07), 0 8px 32px rgba(0,0,0,.4);
+      transform:translateY(-2px);
+    }
+
+    /* ── Stat number ────────────────────────────────────── */
+    .stat-val {
+      font-family:'Syne',sans-serif;
+      font-weight:800;
+      font-size:2rem;
+      line-height:1;
+      display:block;
+    }
+    .stat-val-lg { font-size:2.8rem; }
+    .stat-val-sm { font-size:1.35rem; }
+
+    /* ── Badge/pill ─────────────────────────────────────── */
+    .badge {
+      display:inline-flex; align-items:center;
+      padding:2px 8px;
+      border-radius:4px;
+      font-size:.62rem;
+      font-weight:600;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+
+    /* ── Inset panel (stat boxes) ───────────────────────── */
+    .inset-panel {
+      background:rgba(15,23,42,.6);
+      border-radius:8px;
+      padding:12px;
+      text-align:center;
+    }
+
+    /* ── Divider ────────────────────────────────────────── */
+    .divider-t {
+      border-top:1px solid #1e293b;
+      padding-top:16px;
+    }
+    .divider-h { height:1px; background:#1e293b; flex:1; }
+
+    /* ── Accent gradient line ───────────────────────────── */
+    .accent-line {
+      height:2px;
+      width:80px;
+      background:linear-gradient(90deg,var(--sky),var(--emerald),transparent);
+      border-radius:1px;
+      margin-bottom:24px;
+    }
+
+    /* ── Button ─────────────────────────────────────────── */
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:6px;
+      padding:6px 14px;
+      border:1px solid rgba(56,189,248,.35);
+      border-radius:6px;
+      color:var(--sky);
+      font-size:.72rem;
+      font-weight:600;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      text-decoration:none;
+      background:transparent;
+      cursor:pointer;
+      font-family:inherit;
+      transition:background .2s, border-color .2s, box-shadow .2s;
+    }
+    .btn:hover {
+      background:rgba(56,189,248,.1);
+      border-color:var(--sky);
+      box-shadow:0 0 14px rgba(56,189,248,.2);
+    }
+    .btn-full { width:100%; margin-top:16px; }
+
+    /* ── Progress bar ───────────────────────────────────── */
+    .prog-track { background:#0f172a; border-radius:9999px; overflow:hidden; height:5px; }
+    .prog-fill  { height:100%; border-radius:9999px; transition:width 1s ease; width:0%; }
+
+    /* ── Terminal ───────────────────────────────────────── */
+    .terminal {
+      background:#010b14;
+      border:1px solid rgba(56,189,248,.15);
+      border-radius:10px;
+      overflow:hidden;
+    }
+    .terminal-bar {
+      background:#0d1829;
+      padding:10px 14px;
+      display:flex; align-items:center; gap:6px;
+      border-bottom:1px solid rgba(56,189,248,.1);
+    }
+    .dot { width:11px; height:11px; border-radius:50%; }
+    .dot-red    { background:rgba(239,68,68,.8); }
+    .dot-yellow { background:rgba(250,204,21,.8); }
+    .dot-green  { background:rgba(34,197,94,.8); }
+    pre { white-space:pre-wrap; word-break:break-word; tab-size:2; font-family:inherit; }
+
+    /* syntax */
+    .s-kw  { color:#f97316; }
+    .s-fn  { color:#38bdf8; }
+    .s-str { color:#10b981; }
+    .s-com { color:#475569; }
+    .s-var { color:#e2e8f0; }
+    .s-pun { color:#64748b; }
+
+    /* ── Nav ────────────────────────────────────────────── */
+    nav {
+      position:sticky; top:0; z-index:50;
+      border-bottom:1px solid rgba(56,189,248,.1);
+      backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);
+      background:rgba(2,6,23,.8);
+    }
+    nav .inner {
+      max-width:1200px; margin:0 auto; padding:24px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    nav a { color:#64748b; text-decoration:none; font-size:0.95rem; transition:color .2s; }
+    nav a:hover { color:var(--sky); }
+
+    /* ── Social link row ────────────────────────────────── */
+    .social-row {
+      display:flex; align-items:center; gap:12px;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #1e293b;
+      text-decoration:none;
+      transition:border-color .2s, background .2s;
+    }
+    .social-row:hover { border-color:rgba(56,189,248,.3); background:rgba(56,189,248,.05); }
+    .social-row span  { font-size:.75rem; color:#94a3b8; transition:color .2s; }
+    .social-row:hover span { color:#e2e8f0; }
+
+    /* ── Shimmer skeleton ───────────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position:-400px 0; }
+      100% { background-position: 400px 0; }
+    }
+    .shimmer {
+      background:linear-gradient(90deg,#0f172a 25%,#1e293b 50%,#0f172a 75%);
+      background-size:400px 100%;
+      animation:shimmer 1.4s infinite linear;
+      border-radius:4px;
+      display:inline-block;
+    }
+
+    /* ── Pulse live dot ─────────────────────────────────── */
+    @keyframes pulse-ring {
+      0%  { transform:scale(.9); opacity:1; }
+      70% { transform:scale(1.4); opacity:0; }
+      100%{ transform:scale(.9); opacity:0; }
+    }
+    .live-dot { position:relative; display:inline-block; width:8px; height:8px; }
+    .live-dot span { position:absolute; inset:0; border-radius:50%; background:var(--emerald); }
+    .live-dot span:first-child {
+      animation:pulse-ring 1.6s ease-out infinite;
+      background:rgba(16,185,129,.4);
+      width:160%; height:160%; top:-30%; left:-30%;
+    }
+
+    /* ── Fade-up animation ──────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .fade-up { animation:fadeUp .55s ease both; }
+    .d1 { animation-delay:.1s; }
+    .d2 { animation-delay:.2s; }
+    .d3 { animation-delay:.3s; }
+    .d4 { animation-delay:.4s; }
+    .d5 { animation-delay:.5s; }
+
+    /* ── Cursor blink ───────────────────────────────────── */
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .cursor { animation:blink 1s step-end infinite; }
+
+    /* ── Footer ─────────────────────────────────────────── */
+    footer {
+      border-top:1px solid rgba(56,189,248,.1);
+      padding:40px 20px;
+      text-align:center;
+      font-size:.85rem;
+      color:#64748b;
+      margin-top:60px;
+      position:relative;
+    }
+    footer::before {
+      content:'';
+      position:absolute;
+      top:-1px;
+      left:20%;
+      right:20%;
+      height:1px;
+      background:linear-gradient(90deg,transparent,rgba(56,189,248,.3),transparent);
+    }
+    footer a { color:var(--sky); text-decoration:none; transition:all .3s; }
+    footer a:hover { color:var(--emerald); text-decoration:underline; }
+    .footer-text { line-height:1.8; }
+    .footer-text span { display:inline-block; margin:0 4px; transition:transform .2s; }
+    .footer-text span:hover { transform:scale(1.1); }
+
+    /* ── Icon sizing ────────────────────────────────────── */
+    .icon-sm { width:14px; height:14px; }
+    .icon-md { width:16px; height:16px; }
+    .icon-lg { width:20px; height:20px; }
+
+    /* ── Scrollbar ──────────────────────────────────────── */
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:#1e3a5f; border-radius:3px; }
+  </style>
+</head>
+
+<body class="z-10">
+
+<!-- ════════════════════════════ NAV ══════════════════════ -->
+<nav>
+  <div class="inner">
+    <div class="flex items-center gap-3">
+      <div class="live-dot"><span></span><span></span></div>
+      <span style="font-size:.85rem;font-weight:600;letter-spacing:.1em;color:var(--sky);text-transform:uppercase">sys:online</span>
+    </div>
+    <div id="nav-name" class="font-syne font-bold text-sm tracking-wide" style="color:#e2e8f0">&lt;loading…&gt;</div>
+    <div class="flex items-center" style="gap:24px">
+      <span id="nav-clock" style="font-size:.85rem;color:rgba(56,189,248,.7)"></span>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════ HERO ═════════════════════ -->
+<header class="wrap fade-up" style="padding-top:64px;padding-bottom:40px">
+  <div class="accent-line"></div>
+  <p style="font-size:.7rem;letter-spacing:.1em;color:var(--sky);text-transform:uppercase;margin-bottom:8px">
+    // git commit -m "hire me"
+  </p>
+  <h1 id="hero-name" class="font-syne font-extrabold leading-tight"
+      style="font-size:clamp(2rem,6vw,3.75rem);color:#fff;margin-bottom:16px">
+    <span style="color:var(--sky)">_</span>loading
+  </h1>
+  <p id="hero-bio" class="leading-relaxed" style="color:#94a3b8;max-width:520px;font-size:.85rem">
+    CS Student &amp; Full-Stack Engineer. Building at the intersection of systems, scale, and simplicity.
+  </p>
+  <div class="flex flex-wrap gap-3 mt-6">
+    <a id="hero-github" href="#" target="_blank" class="btn">
+      <i data-lucide="github" class="icon-sm"></i> GitHub
+    </a>
+    <a href="#contact" class="btn">
+      <i data-lucide="mail" class="icon-sm"></i> Contact
+    </a>
+    <a id="resume-link" href="#" class="btn">
+      <i data-lucide="file-text" class="icon-sm"></i> Résumé
+    </a>
+  </div>
+</header>
+
+<!-- ════════════════════════════ MAIN GRID ════════════════ -->
+<main class="wrap pb-20" style="display:flex;flex-direction:column;gap:20px">
+
+  <!-- ROW 1 — GitHub | LeetCode | Stack -->
+  <div class="grid-3">
+
+    <!-- GitHub Card -->
+    <div class="glass p-5 fade-up d1" id="github-card">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <i data-lucide="github" class="icon-md text-sky"></i>
+          <span class="text-xs tracking-widest uppercase text-sky font-semibold">GitHub</span>
+        </div>
+        <span id="gh-status" class="text-xs text-muted">
+          <span class="shimmer" style="width:60px;height:12px"></span>
+        </span>
+      </div>
+
+      <div class="flex items-center gap-3 mb-5">
+        <div id="gh-avatar-wrap" class="shimmer" style="width:48px;height:48px;border-radius:50%"></div>
+        <div>
+          <p id="gh-name"  class="shimmer" style="width:110px;height:14px;margin-bottom:6px"></p>
+          <p id="gh-login" class="shimmer" style="width:80px;height:11px"></p>
+        </div>
+      </div>
+
+      <div class="grid-cols-3 mb-5">
+        <div class="inset-panel">
+          <span id="gh-repos"     class="stat-val text-sky"><span class="shimmer" style="width:32px;height:24px"></span></span>
+          <p class="text-xs text-muted mt-1">Repos</p>
+        </div>
+        <div class="inset-panel">
+          <span id="gh-followers" class="stat-val text-emerald"><span class="shimmer" style="width:32px;height:24px"></span></span>
+          <p class="text-xs text-muted mt-1">Followers</p>
+        </div>
+        <div class="inset-panel">
+          <span id="gh-following" class="stat-val text-purple"><span class="shimmer" style="width:32px;height:24px"></span></span>
+          <p class="text-xs text-muted mt-1">Following</p>
+        </div>
+      </div>
+
+      <div class="divider-t">
+        <p class="text-xs text-muted uppercase tracking-widest mb-2">Latest Activity</p>
+        <div id="gh-activity" class="space-y-sm">
+          <div class="shimmer" style="width:100%;height:12px"></div>
+          <div class="shimmer" style="width:80%;height:12px"></div>
+        </div>
+      </div>
+
+      <a id="gh-link" href="#" target="_blank" class="btn btn-full">
+        <i data-lucide="external-link" class="icon-sm"></i> View Profile
+      </a>
+    </div>
+
+    <!-- LeetCode Card -->
+    <div class="glass p-5 fade-up d2">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z" fill="#f7a41d"/>
+          </svg>
+          <span class="text-xs tracking-widest uppercase font-semibold" style="color:#f7a41d">LeetCode</span>
+        </div>
+        <span id="lc-status" class="text-xs text-muted">fetching…</span>
+      </div>
+
+      <div class="text-center my-4">
+        <span id="lc-solved" class="stat-val stat-val-lg" style="color:#f7a41d">
+          <span class="shimmer" style="width:70px;height:40px"></span>
+        </span>
+        <p class="text-xs text-muted mt-1 uppercase tracking-widest">Problems Solved</p>
+      </div>
+
+      <div class="space-y mb-5">
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="text-emerald">Easy</span>
+            <span id="lc-easy" class="text-slate-4">—</span>
+          </div>
+          <div class="prog-track"><div id="lc-easy-bar"   class="prog-fill" style="background:var(--emerald)"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span style="color:#f7a41d">Medium</span>
+            <span id="lc-medium" class="text-slate-4">—</span>
+          </div>
+          <div class="prog-track"><div id="lc-medium-bar" class="prog-fill" style="background:#f7a41d"></div></div>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs mb-1">
+            <span class="text-red">Hard</span>
+            <span id="lc-hard" class="text-slate-4">—</span>
+          </div>
+          <div class="prog-track"><div id="lc-hard-bar"   class="prog-fill" style="background:#f87171"></div></div>
+        </div>
+      </div>
+
+      <div class="grid-cols-2">
+        <div class="inset-panel">
+          <span id="lc-accept" class="stat-val stat-val-sm text-sky"><span class="shimmer" style="width:50px;height:18px"></span></span>
+          <p class="text-xs text-muted mt-1">Accept Rate</p>
+        </div>
+        <div class="inset-panel">
+          <span id="lc-rank" class="stat-val stat-val-sm text-purple"><span class="shimmer" style="width:50px;height:18px"></span></span>
+          <p class="text-xs text-muted mt-1">Ranking</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stack Card -->
+    <div class="glass p-5 fade-up d3">
+      <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="layers" class="icon-md text-emerald"></i>
+        <span class="text-xs tracking-widest uppercase text-emerald font-semibold">Tech Stack</span>
+      </div>
+      <div id="stack-grid" style="display:flex;flex-direction:column;gap:16px"></div>
+    </div>
+  </div>
+
+  <!-- ROW 2 — Terminal | Contact -->
+  <div class="grid-5">
+
+    <div class="terminal fade-up d4">
+      <div class="terminal-bar">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+        <span style="margin-left:12px;font-size:.72rem;color:#475569">about_me.ts — engineer-portfolio</span>
+      </div>
+      <div style="padding:20px;font-size:.78rem;line-height:1.7;overflow-x:auto">
+        <pre id="terminal-code"></pre>
+      </div>
+    </div>
+
+    <div class="glass p-5 fade-up d5" id="contact">
+      <div class="flex items-center gap-2 mb-4">
+        <i data-lucide="send" class="icon-md text-sky"></i>
+        <span class="text-xs tracking-widest uppercase text-sky font-semibold">Contact</span>
+      </div>
+      <p style="color:#94a3b8;font-size:.78rem;line-height:1.6;margin-bottom:20px">
+        Open to internships, research collaborations, and interesting side projects.
+      </p>
+      <div id="social-links" class="space-y"></div>
+      <div class="divider-t mt-5">
+        <p class="text-xs text-muted uppercase tracking-widest mb-2">Availability</p>
+        <div class="flex items-center gap-2">
+          <div class="live-dot"><span></span><span></span></div>
+          <span style="color:var(--emerald);font-size:.75rem;font-weight:600">Open to opportunities</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 3 — Projects -->
+  <div id="projects">
+    <div class="flex items-center gap-3 mb-5 fade-up d2">
+      <i data-lucide="folder-git-2" class="icon-lg text-sky"></i>
+      <h2 class="font-syne font-bold text-lg" style="color:#fff">Featured Projects</h2>
+      <div class="divider-h"></div>
+    </div>
+    <div class="grid-3" id="project-grid"></div>
+  </div>
+
+</main>
+
+<!-- ════════════════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <div class="footer-text">
+    <div>✨ Built with <span style="color:var(--sky)">HTML · CSS · Vanilla JS</span> ✨</div>
+    <div>🚀 Deployed on <span style="color:var(--emerald)">Vercel / GitHub Pages</span> 🚀</div>
+    <div style="margin-top:16px;font-size:.75rem;color:#475569">Made with ❤️ and lots of ☕ · <span id="footer-copy"></span></div>
+    <div style="margin-top:12px;font-size:.7rem;color:#334155">no bugs here, only undocumented features™</div>
+  </div>
+</footer>   
+
+<!-- ════════════════════════════ SCRIPTS ══════════════════ -->
+<script>
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ▶  config.js is inlined here so the single-file version
+      works perfectly with Live Server AND when deployed.
+      YOU ONLY NEED TO CHANGE THE VALUES IN THIS BLOCK.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+// ── STEP 1: Put your usernames here ──────────────────────
+const GITHUB_USER   = "Satvik1131";    
+const LEETCODE_USER = "Satvik_007";  
+
+// ── STEP 2: Fill in your personal info ───────────────────
+const PERSONAL = {
+  email:     "Satvikagrawal007@gmail.com",
+  linkedin:  "https://www.linkedin.com/in/satvik-agrawal1104/",
+  twitter:   "https://twitter.com/yourhandle",
+  location:  "Jaipur, India",
+  resumeUrl: "https://drive.google.com/file/d/1DJgLTt-P9uTWIA4FRZZ4Vn26Qh99ZyUI/view?usp=drive_link",   // paste your Google Drive resume link here
+};
+
+// ── STEP 3: Edit your projects ───────────────────────────
+const PROJECTS = [
+  {
+    name:  "NeuralSearch",
+    desc:  "Semantic search engine powered by vector embeddings. Sub-50ms query latency at 1M documents.",
+    tags:  ["Python", "FastAPI", "pgvector", "React"],
+    repo:  `https://github.com/${GITHUB_USER}/neuralsearch`,
+    color: "#38bdf8",
+    icon:  "search",
+  },
+  {
+    name:  "DistributedKV",
+    desc:  "Raft-consensus key-value store in Go. Supports linearisable reads and dynamic membership.",
+    tags:  ["Go", "Raft", "gRPC", "Docker"],
+    repo:  `https://github.com/${GITHUB_USER}/distributedkv`,
+    color: "#10b981",
+    icon:  "database",
+  },
+  {
+    name:  "CloudBench",
+    desc:  "Real-time multi-cloud cost & performance dashboard. Tracks 30+ metrics across AWS, GCP, Azure.",
+    tags:  ["TypeScript", "Next.js", "Prisma", "Recharts"],
+    repo:  `https://github.com/${GITHUB_USER}/cloudbench`,
+    color: "#a78bfa",
+    icon:  "bar-chart-2",
+  },
+  {
+    name:  "DevOS Shell",
+    desc:  "POSIX-compliant shell in C with job control, piping, I/O redirection, and scripting.",
+    tags:  ["C", "POSIX", "Flex/Bison", "CMake"],
+    repo:  `https://github.com/${GITHUB_USER}/devos-shell`,
+    color: "#f97316",
+    icon:  "terminal",
+  },
+];
+
+// ── STEP 4: Edit your tech stack ─────────────────────────
+const STACK = [
+  { label: "Languages", items: ["Python","C/C++","SQL"] },
+  { label: "Frontend",  items: ["React","Next.js","TailwindCSS"] },
+  { label: "Backend",   items: ["Node.js","RestAPI"] },
+  //{ label: "DevOps",    items: ["Docker","K8s","Terraform","GitHub Actions"] },
+];
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DO NOT EDIT BELOW THIS LINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+const $ = id => document.getElementById(id);
+const fmt = n => n >= 1000 ? (n/1000).toFixed(1)+"k" : String(n);
+const ago = d => {
+  const s = Math.floor((Date.now()-d)/1000);
+  if(s<60)    return s+"s ago";
+  if(s<3600)  return Math.floor(s/60)+"m ago";
+  if(s<86400) return Math.floor(s/3600)+"h ago";
+  return Math.floor(s/86400)+"d ago";
+};
+
+// Safe icon init (guards async CDN load)
+function initIcons() {
+  if(typeof lucide!=="undefined" && lucide.createIcons) lucide.createIcons();
+  else setTimeout(initIcons, 80);
+}
+
+// Clock
+function startClock() {
+  const el=$("nav-clock"); if(!el) return;
+  const tick=()=> el.textContent=new Date().toLocaleTimeString("en-US",{hour12:false});
+  tick(); setInterval(tick,1000);
+}
+
+// Stack badges
+function renderStack() {
+  const colors = [
+    {bg:"rgba(56,189,248,.12)", color:"#38bdf8", border:"rgba(56,189,248,.25)"},
+    {bg:"rgba(16,185,129,.12)", color:"#10b981", border:"rgba(16,185,129,.25)"},
+    {bg:"rgba(167,139,250,.12)",color:"#a78bfa", border:"rgba(167,139,250,.25)"},
+    {bg:"rgba(249,115,22,.12)", color:"#f97316", border:"rgba(249,115,22,.25)"},
+  ];
+  const sg=$("stack-grid");
+  STACK.forEach((s,i)=>{
+    const c=colors[i%colors.length];
+    sg.innerHTML+=`
+      <div>
+        <p style="font-size:.65rem;color:#64748b;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">${s.label}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${s.items.map(t=>`<span class="badge" style="background:${c.bg};color:${c.color};border:1px solid ${c.border}">${t}</span>`).join("")}
+        </div>
+      </div>`;
+  });
+}
+
+// Terminal
+function renderTerminal(name) {
+  const n = name||GITHUB_USER;
+  $("terminal-code").innerHTML=
+`<span class="s-com">// about_me.ts — auto-generated profile</span>
+
+<span class="s-kw" style="color:#f97316">interface</span> <span class="s-fn">Engineer</span> <span class="s-pun">{</span>
+  name<span class="s-pun">:</span>     <span class="s-fn">string</span><span class="s-pun">;</span>
+  role<span class="s-pun">:</span>     <span class="s-fn">string</span><span class="s-pun">;</span>
+  location<span class="s-pun">:</span> <span class="s-fn">string</span><span class="s-pun">;</span>
+  skills<span class="s-pun">:</span>   <span class="s-fn">string</span><span class="s-pun">[];</span>
+<span class="s-pun">}</span>
+
+<span class="s-kw" style="color:#f97316">const</span> <span class="s-var">me</span><span class="s-pun">:</span> <span class="s-fn">Engineer</span> <span class="s-pun">=</span> <span class="s-pun">{</span>
+  name<span class="s-pun">:</span>     <span class="s-str">"${n}"</span><span class="s-pun">,</span>
+  role<span class="s-pun">:</span>     <span class="s-str">"CS Student &amp; Full-Stack Engineer"</span><span class="s-pun">,</span>
+  location<span class="s-pun">:</span> <span class="s-str">"${PERSONAL.location}"</span><span class="s-pun">,</span>
+  skills<span class="s-pun">:</span>   <span class="s-pun">[</span><span class="s-str">"TypeScript"</span><span class="s-pun">,</span><span class="s-str">"Go"</span><span class="s-pun">,</span><span class="s-str">"Python"</span><span class="s-pun">,</span><span class="s-str">"C/C++"</span><span class="s-pun">],</span>
+<span class="s-pun">};</span>
+
+<span class="s-kw" style="color:#f97316">export function</span> <span class="s-fn">contact</span><span class="s-pun">():</span> <span class="s-fn">string</span> <span class="s-pun">{</span>
+  <span class="s-kw" style="color:#f97316">return</span> <span class="s-str">\`mailto:${PERSONAL.email}\`</span><span class="s-pun">;</span>
+<span class="s-pun">}</span>
+
+<span class="s-com">// status: open to internships &amp; research</span>
+<span class="s-var">me</span><span class="s-pun">.</span><span class="s-fn">availability</span> <span class="s-pun">=</span> <span class="s-str">"available"</span><span class="s-pun">;</span> <span class="cursor">▋</span>`;
+}
+
+// Social links
+function renderSocials() {
+  const socials=[
+    {icon:"github",   label:"GitHub",   url:`https://github.com/${GITHUB_USER}`, color:"#38bdf8"},
+    {icon:"linkedin", label:"LinkedIn", url:PERSONAL.linkedin,                   color:"#38bdf8"},
+    {icon:"twitter",  label:"Twitter",  url:PERSONAL.twitter,                    color:"#38bdf8"},
+    {icon:"mail",     label:"Email",    url:`mailto:${PERSONAL.email}`,          color:"#10b981"},
+  ];
+  const sl=$("social-links");
+  socials.forEach(s=>{
+    sl.innerHTML+=`
+      <a href="${s.url}" target="_blank" class="social-row">
+        <i data-lucide="${s.icon}" class="icon-md shrink-0" style="color:${s.color}"></i>
+        <span>${s.label}</span>
+        <i data-lucide="external-link" class="icon-sm" style="margin-left:auto;color:#334155"></i>
+      </a>`;
+  });
+}
+
+// Project cards
+function renderProjects() {
+  const pg=$("project-grid");
+  PROJECTS.forEach((p,i)=>{
+    const tags=p.tags.map(t=>
+      `<span class="badge" style="background:${p.color}20;color:${p.color};border:1px solid ${p.color}35">${t}</span>`
+    ).join("");
+    pg.innerHTML+=`
+      <div class="glass p-5 fade-up" style="display:flex;flex-direction:column;gap:16px;animation-delay:${i*.1}s">
+        <div class="flex items-start justify-between">
+          <div style="padding:8px;border-radius:8px;background:${p.color}15">
+            <i data-lucide="${p.icon}" class="icon-lg" style="color:${p.color}"></i>
+          </div>
+          <a href="${p.repo}" target="_blank" style="color:#334155;transition:color .2s" onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#334155'">
+            <i data-lucide="github" class="icon-md"></i>
+          </a>
+        </div>
+        <div>
+          <h3 class="font-syne font-bold text-base" style="color:#fff;margin-bottom:6px">${p.name}</h3>
+          <p style="font-size:.75rem;color:#94a3b8;line-height:1.6">${p.desc}</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:auto">${tags}</div>
+        <a href="${p.repo}" target="_blank" class="btn">
+          <i data-lucide="code-2" class="icon-sm"></i> View Source
+        </a>
+      </div>`;
+  });
+}
+
+// GitHub fetch
+async function loadGitHub() {
+  try {
+    const [pRes,eRes] = await Promise.all([
+      fetch(`https://api.github.com/users/${GITHUB_USER}`),
+      fetch(`https://api.github.com/users/${GITHUB_USER}/events/public?per_page=5`),
+    ]);
+    if(!pRes.ok) throw new Error(pRes.status);
+    const p = await pRes.json();
+
+    // Avatar
+    const aw=$("gh-avatar-wrap");
+    aw.style.cssText="width:48px;height:48px;border-radius:50%;overflow:hidden";
+    aw.innerHTML=`<img src="${p.avatar_url}" style="width:100%;height:100%;object-fit:cover" alt="avatar"/>`;
+
+    // Name/handle
+    $("gh-name").style.cssText="font-size:.85rem;font-weight:700;color:#fff";
+    $("gh-name").textContent=p.name||GITHUB_USER;
+    $("gh-login").style.cssText="font-size:.72rem;color:#64748b";
+    $("gh-login").textContent=`@${p.login}`;
+
+    // Stats
+    $("gh-repos").textContent     = fmt(p.public_repos);
+    $("gh-followers").textContent = fmt(p.followers);
+    $("gh-following").textContent = fmt(p.following);
+
+    // Status
+    $("gh-status").innerHTML=`<span style="color:#10b981;display:flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block"></span>Live</span>`;
+
+    // Nav + Hero
+    $("nav-name").textContent = p.name||GITHUB_USER;
+    $("hero-name").innerHTML  = `<span style="color:var(--sky)">&gt;</span> ${p.name||GITHUB_USER}`;
+    if(p.bio) $("hero-bio").textContent=p.bio;
+    $("hero-github").href = p.html_url;
+    $("gh-link").href     = p.html_url;
+    $("footer-copy").textContent=`© ${p.name||GITHUB_USER} ${new Date().getFullYear()}`;
+    renderTerminal(p.name||p.login);
+
+    // Activity
+    if(eRes.ok){
+      const evs=await eRes.json();
+      const el=$("gh-activity"); el.innerHTML="";
+      const label={
+        PushEvent:       e=>`Pushed to <strong style="color:#38bdf8">${e.repo.name.split("/")[1]}</strong>`,
+        CreateEvent:     e=>`Created <strong style="color:#10b981">${e.payload.ref_type}</strong> ${e.payload.ref||""}`,
+        PullRequestEvent:e=>`PR <strong style="color:#a78bfa">#${e.payload.pull_request?.number}</strong>: ${e.payload.pull_request?.title?.slice(0,35)}…`,
+        WatchEvent:      e=>`Starred <strong style="color:#fbbf24">${e.repo.name}</strong>`,
+        ForkEvent:       e=>`Forked <strong style="color:#f97316">${e.repo.name}</strong>`,
+      };
+      evs.slice(0,3).forEach(ev=>{
+        const lbl=label[ev.type]?label[ev.type](ev):ev.type.replace("Event","");
+        el.innerHTML+=`
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:.72rem">
+            <i data-lucide="git-commit-horizontal" class="icon-sm shrink-0" style="color:rgba(56,189,248,.5);margin-top:2px"></i>
+            <span style="color:#94a3b8;line-height:1.5">${lbl} <span style="color:#475569">· ${ago(new Date(ev.created_at))}</span></span>
+          </div>`;
+      });
+      if(!evs.length) el.innerHTML=`<p style="font-size:.72rem;color:#334155">No recent public events.</p>`;
+    }
+  } catch(err) {
+    console.warn("GitHub:",err);
+    $("gh-status").innerHTML=`<span style="color:#f87171">error</span>`;
+    $("gh-activity").innerHTML=`<p style="font-size:.72rem;color:rgba(248,113,113,.6)">Could not load — check username or API rate limit.</p>`;
+    $("nav-name").textContent=GITHUB_USER;
+    $("hero-name").innerHTML=`<span style="color:var(--sky)">&gt;</span> ${GITHUB_USER}`;
+  }
+  initIcons();
+}
+
+// LeetCode fetch
+async function loadLeetCode() {
+  const APIS = [
+    `https://leetcode-stats-api.herokuapp.com/api/${LEETCODE_USER}`,
+    `https://leetcode.carbontrackerx.com/api/${LEETCODE_USER}`,
+    `https://alpha-leetcode-api.herokuapp.com/userProfile/${LEETCODE_USER}`,
+  ];
+
+  let d = null;
+
+  for (const url of APIS) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const json = await res.json();
+      if (json.status === "error" || !json) continue;
+      d = json;
+      break; // stop as soon as one works
+    } catch(e) {
+      console.log("API failed:", url);
+      continue; // try next
+    }
+  }
+
+  if (!d) {
+    $("lc-status").innerHTML = `<span style="color:#f87171">API unavailable</span>`;
+    $("lc-solved").textContent = "—";
+    $("lc-accept").textContent = "—";
+    $("lc-rank").textContent   = "—";
+    ["lc-easy","lc-medium","lc-hard"].forEach(id => {
+      const e=$(id); if(e) e.textContent="— / —";
+    });
+    return;
+  }
+
+  const {totalSolved:tot=0,
+         easySolved:easy=0,  totalEasy:eT=1,
+         mediumSolved:med=0, totalMedium:mT=1,
+         hardSolved:hard=0,  totalHard:hT=1} = d;
+
+  $("lc-solved").textContent = tot;
+  $("lc-accept").textContent = d.acceptanceRate ? d.acceptanceRate.toFixed(1)+"%" : "—";
+  $("lc-rank").textContent   = d.ranking ? fmt(d.ranking) : "—";
+  $("lc-easy").textContent   = `${easy} / ${eT}`;
+  $("lc-medium").textContent = `${med} / ${mT}`;
+  $("lc-hard").textContent   = `${hard} / ${hT}`;
+
+  requestAnimationFrame(() => {
+    $("lc-easy-bar").style.width   = Math.round(easy/eT*100)+"%";
+    $("lc-medium-bar").style.width = Math.round(med/mT*100)+"%";
+    $("lc-hard-bar").style.width   = Math.round(hard/hT*100)+"%";
+  });
+
+  $("lc-status").innerHTML = `<span style="color:#10b981">loaded</span>`;
+}
+
+// Boot
+document.addEventListener("DOMContentLoaded",()=>{
+  startClock();
+  renderStack();
+  renderTerminal();
+  renderSocials();
+  renderProjects();
+  initIcons();
+  loadGitHub();
+  loadLeetCode();
+  if($("resume-link")) $("resume-link").href=PERSONAL.resumeUrl;
+  $("footer-copy").textContent=`© ${GITHUB_USER} ${new Date().getFullYear()}`;
+});
+</script>
+</body>
+</html>
