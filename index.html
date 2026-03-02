@@ -599,7 +599,7 @@
 
 // ── STEP 1: Put your usernames here ──────────────────────
 const GITHUB_USER   = "Satvik1131";    
-const LEETCODE_USER = "Satvik_007";  
+const LEETCODE_USER = "satvikagrawal007";  
 
 // ── STEP 2: Fill in your personal info ───────────────────
 const PERSONAL = {
@@ -614,43 +614,43 @@ const PERSONAL = {
 const PROJECTS = [
   {
     name:  "Shortly",
-    desc:  "A full-stack URL shortner that generates secure,unique short links with real-time redurection and database persistence ",
+    desc:  "A full-stack URL shortner that generates secure,unique short links with real-time redirection and database persistence ",
     tags:  ["Javascript", "REST API", "Authentication", "Node.js", "Express.js", "MongoDB"],
-    repo:  `https://github.com/${Satvik1131}/Shortly`,
+    repo:  `https://github.com/${GITHUB_USER}/Shortly`,
     color: "#38bdf8",
     icon:  "search",
   },
   {
-    name:  "DistributedKV",
-    desc:  "Raft-consensus key-value store in Go. Supports linearisable reads and dynamic membership.",
-    tags:  ["Go", "Raft", "gRPC", "Docker"],
-    repo:  `https://github.com/${GITHUB_USER}/distributedkv`,
+    name:  "Blogify",
+    desc:  "Built a secure blogging platform enabling authenticated users to publish posts and engage through a dynamic comment system.",
+    tags:  ["Javascript", "Node.js", "MongoDB", "REST API","Authentication"],
+    repo:  `https://github.com/${GITHUB_USER}/Blogify`,
     color: "#10b981",
     icon:  "database",
   },
   {
-    name:  "CloudBench",
-    desc:  "Real-time multi-cloud cost & performance dashboard. Tracks 30+ metrics across AWS, GCP, Azure.",
-    tags:  ["TypeScript", "Next.js", "Prisma", "Recharts"],
+    name:  "GPS & Face Verification Based Attendance System",
+    desc:  "Built a GPS and facial recognition-based attendance system using Node.js and SQL, enabling secure on-campus verification and eliminating manual attendance fraud through geolocation and face authentication.",
+    tags:  ["JavaScript", "SQL", "Node.js", "Mappls API","face-recognition.js"],
     repo:  `https://github.com/${GITHUB_USER}/cloudbench`,
     color: "#a78bfa",
     icon:  "bar-chart-2",
   },
-  {
-    name:  "DevOS Shell",
-    desc:  "POSIX-compliant shell in C with job control, piping, I/O redirection, and scripting.",
-    tags:  ["C", "POSIX", "Flex/Bison", "CMake"],
-    repo:  `https://github.com/${GITHUB_USER}/devos-shell`,
-    color: "#f97316",
-    icon:  "terminal",
-  },
+  // {
+  //   name:  "DevOS Shell",
+  //   desc:  "POSIX-compliant shell in C with job control, piping, I/O redirection, and scripting.",
+  //   tags:  ["C", "POSIX", "Flex/Bison", "CMake"],
+  //   repo:  `https://github.com/${GITHUB_USER}/devos-shell`,
+  //   color: "#f97316",
+  //   icon:  "terminal",
+  // },
 ];
 
 // ── STEP 4: Edit your tech stack ─────────────────────────
 const STACK = [
-  { label: "Languages", items: ["Python","C/C++","SQL"] },
+  { label: "Languages", items: ["Python","C/C++","SQL","Javascript"] },
   { label: "Frontend",  items: ["React","Next.js","TailwindCSS"] },
-  { label: "Backend",   items: ["Node.js","RestAPI"] },
+  { label: "Backend",   items: ["Node.js","Express.js","JWT-auth","REST API"] },
   //{ label: "DevOps",    items: ["Docker","K8s","Terraform","GitHub Actions"] },
 ];
 
@@ -719,7 +719,7 @@ function renderTerminal(name) {
   name<span class="s-pun">:</span>     <span class="s-str">"${n}"</span><span class="s-pun">,</span>
   role<span class="s-pun">:</span>     <span class="s-str">"CS Student &amp; Full-Stack Engineer"</span><span class="s-pun">,</span>
   location<span class="s-pun">:</span> <span class="s-str">"${PERSONAL.location}"</span><span class="s-pun">,</span>
-  skills<span class="s-pun">:</span>   <span class="s-pun">[</span><span class="s-str">"TypeScript"</span><span class="s-pun">,</span><span class="s-str">"Go"</span><span class="s-pun">,</span><span class="s-str">"Python"</span><span class="s-pun">,</span><span class="s-str">"C/C++"</span><span class="s-pun">],</span>
+  skills<span class="s-pun">:</span>   <span class="s-pun">[</span><span class="s-str">"JavaScript"</span><span class="s-pun">,</span><span class="s-str">"Node.js"</span><span class="s-pun">,</span><span class="s-str">"Python"</span><span class="s-pun">,</span><span class="s-str">"C/C++"</span><span class="s-pun">],</span>
 <span class="s-pun">};</span>
 
 <span class="s-kw" style="color:#f97316">export function</span> <span class="s-fn">contact</span><span class="s-pun">():</span> <span class="s-fn">string</span> <span class="s-pun">{</span>
@@ -850,54 +850,87 @@ async function loadGitHub() {
 // LeetCode fetch
 async function loadLeetCode() {
   const APIS = [
-    `https://leetcode-stats-api.herokuapp.com/api/${LEETCODE_USER}`,
-    `https://leetcode.carbontrackerx.com/api/${LEETCODE_USER}`,
-    `https://alpha-leetcode-api.herokuapp.com/userProfile/${LEETCODE_USER}`,
+    {
+      url: `https://leetcode-stats.tashif.codes/${LEETCODE_USER}`,
+      map: d => ({
+        tot:  d.totalSolved,
+        easy: d.easySolved,  eT: d.totalEasy,
+        med:  d.mediumSolved, mT: d.totalMedium,
+        hard: d.hardSolved,  hT: d.totalHard,
+        rate: d.acceptanceRate,
+        rank: d.ranking,
+      })
+    },
+    {
+      url: `https://leetcode-api-pied.vercel.app/${LEETCODE_USER}`,
+      map: d => {
+        // this API nests stats differently
+        const sub = d.submitStats?.acSubmissionNum || [];
+        const get = (diff) => sub.find(x => x.difficulty === diff)?.count || 0;
+        return {
+          tot:  d.totalSolved ?? get("All"),
+          easy: get("Easy"),  eT: d.totalEasy  || 878,
+          med:  get("Medium"), mT: d.totalMedium || 1853,
+          hard: get("Hard"),  hT: d.totalHard   || 819,
+          rate: null,
+          rank: d.ranking,
+        };
+      }
+    },
+    {
+      url: `https://alfa-leetcode-api.onrender.com/${LEETCODE_USER}/solved`,
+      map: d => ({
+        tot:  d.solvedProblem,
+        easy: d.easySolved,  eT: 878,
+        med:  d.mediumSolved, mT: 1853,
+        hard: d.hardSolved,  hT: 819,
+        rate: null,
+        rank: null,
+      })
+    },
   ];
 
-  let d = null;
+  let stats = null;
 
-  for (const url of APIS) {
+  for (const api of APIS) {
     try {
-      const res = await fetch(url);
+      const res = await fetch(api.url);
       if (!res.ok) continue;
       const json = await res.json();
-      if (json.status === "error" || !json) continue;
-      d = json;
-      break; // stop as soon as one works
+      if (!json || json.errors) continue;
+      const mapped = api.map(json);
+      if (!mapped.tot && mapped.tot !== 0) continue;
+      stats = mapped;
+      break;
     } catch(e) {
-      console.log("API failed:", url);
-      continue; // try next
+      console.warn("LC API failed:", api.url, e.message);
     }
   }
 
-  if (!d) {
+  if (!stats) {
     $("lc-status").innerHTML = `<span style="color:#f87171">API unavailable</span>`;
     $("lc-solved").textContent = "—";
     $("lc-accept").textContent = "—";
     $("lc-rank").textContent   = "—";
     ["lc-easy","lc-medium","lc-hard"].forEach(id => {
-      const e=$(id); if(e) e.textContent="— / —";
+      const e = $(id); if(e) e.textContent = "— / —";
     });
     return;
   }
 
-  const {totalSolved:tot=0,
-         easySolved:easy=0,  totalEasy:eT=1,
-         mediumSolved:med=0, totalMedium:mT=1,
-         hardSolved:hard=0,  totalHard:hT=1} = d;
+  const { tot, easy, eT, med, mT, hard, hT, rate, rank } = stats;
 
   $("lc-solved").textContent = tot;
-  $("lc-accept").textContent = d.acceptanceRate ? d.acceptanceRate.toFixed(1)+"%" : "—";
-  $("lc-rank").textContent   = d.ranking ? fmt(d.ranking) : "—";
+  $("lc-accept").textContent = rate ? rate.toFixed(1) + "%" : "—";
+  $("lc-rank").textContent   = rank ? fmt(rank) : "—";
   $("lc-easy").textContent   = `${easy} / ${eT}`;
   $("lc-medium").textContent = `${med} / ${mT}`;
   $("lc-hard").textContent   = `${hard} / ${hT}`;
 
   requestAnimationFrame(() => {
-    $("lc-easy-bar").style.width   = Math.round(easy/eT*100)+"%";
-    $("lc-medium-bar").style.width = Math.round(med/mT*100)+"%";
-    $("lc-hard-bar").style.width   = Math.round(hard/hT*100)+"%";
+    $("lc-easy-bar").style.width   = Math.round(easy / eT * 100) + "%";
+    $("lc-medium-bar").style.width = Math.round(med  / mT * 100) + "%";
+    $("lc-hard-bar").style.width   = Math.round(hard / hT * 100) + "%";
   });
 
   $("lc-status").innerHTML = `<span style="color:#10b981">loaded</span>`;
