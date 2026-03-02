@@ -77,6 +77,7 @@
     .z-10       { position:relative; z-index:10; }
     .overflow-hidden { overflow:hidden; }
     .overflow-x-auto { overflow-x:auto; }
+    .touch-target { min-height:44px; min-width:44px; }
 
     @media(min-width:768px) {
       .grid-3   { grid-template-columns:1fr 1fr; }
@@ -85,6 +86,126 @@
     @media(min-width:1024px) {
       .grid-3   { grid-template-columns:1fr 1fr 1fr; }
       .grid-5   { grid-template-columns:3fr 2fr; }
+    }
+
+    /* ── Mobile optimizations ──────────────────────── */
+    @media(max-width:767px) {
+      body { font-size:13px; }
+      .wrap { padding:0 16px; }
+      
+      header { padding-top:48px !important; padding-bottom:32px !important; }
+      h1 { font-size:clamp(1.5rem,5vw,2.25rem) !important; }
+      .text-lg { font-size:1rem; }
+      .text-base { font-size:.95rem; }
+      .text-sm { font-size:.8rem; }
+      .text-xs { font-size:.7rem; }
+      
+      nav .inner {
+        flex-direction:column;
+        gap:12px;
+        padding:16px 20px;
+      }
+      nav a {
+        font-size:.85rem;
+      }
+      nav .flex:last-child {
+        width:100%;
+        justify-content:space-between;
+      }
+      
+      .grid-3 { grid-template-columns:1fr; gap:16px; }
+      .grid-5 { grid-template-columns:1fr; gap:16px; }
+      .grid-cols-3 { grid-template-columns:1fr 1fr !important; gap:10px !important; }
+      .grid-cols-2 { grid-template-columns:1fr !important; gap:10px !important; }
+      
+      .glass { padding:16px !important; }
+      .p-5 { padding:16px !important; }
+      
+      .stat-val { font-size:1.5rem; }
+      .stat-val-lg { font-size:2rem; }
+      .stat-val-sm { font-size:1.1rem; }
+      
+      .btn { padding:8px 12px; font-size:.65rem; }
+      .btn-full { margin-top:12px; }
+      
+      .terminal { font-size:.7rem; }
+      .terminal-bar { padding:8px 12px; }
+      
+      .accent-line { width:60px; margin-bottom:16px; }
+      
+      .flex-wrap { flex-wrap:wrap; }
+      
+      .mb-5 { margin-bottom:16px; }
+      .mb-8 { margin-bottom:24px; }
+      .mt-6 { margin-top:16px; }
+      .py-6 { padding-top:16px; padding-bottom:16px; }
+      .pb-20 { padding-bottom:40px; }
+      
+      .divider-h { display:flex; }
+      
+      footer { padding:32px 16px; margin-top:40px; }
+      .footer-text { font-size:.75rem; }
+      
+      .space-y > * + * { margin-top:8px; }
+      
+      main { gap:16px; }
+      
+      .social-row { padding:12px; }
+      
+      .inset-panel { padding:10px; }
+    }
+
+    /* ── Extra small devices (< 480px) ──────────────── */
+    @media(max-width:479px) {
+      .wrap { padding:0 12px; }
+      
+      header { padding-top:40px !important; padding-bottom:24px !important; }
+      h1 { font-size:clamp(1.25rem,4vw,2rem) !important; margin-bottom:12px !important; }
+      
+      nav { border-bottom:1px solid rgba(56,189,248,.08); }
+      nav .inner { padding:12px 16px; gap:8px; }
+      
+      .accent-line { width:50px; margin-bottom:12px; }
+      
+      .glass { padding:12px !important; }
+      .p-5 { padding:12px !important; }
+      .p-3 { padding:10px !important; }
+      
+      .grid-3 { gap:12px; }
+      .grid-5 { gap:12px; }
+      .grid-cols-3 { gap:8px !important; }
+      .grid-cols-2 { gap:8px !important; }
+      
+      .stat-val { font-size:1.25rem; }
+      .stat-val-lg { font-size:1.75rem; }
+      .stat-val-sm { font-size:.95rem; }
+      
+      .gap-3 { gap:10px; }
+      .gap-4 { gap:12px; }
+      .gap-5 { gap:16px; }
+      
+      .text-5xl { font-size:2rem; }
+      .text-2xl { font-size:1.25rem; }
+      .text-xl { font-size:1.1rem; }
+      
+      .mb-4 { margin-bottom:12px; }
+      .mb-5 { margin-bottom:12px; }
+      .mb-6 { margin-bottom:16px; }
+      .mt-5 { margin-top:12px; }
+      
+      .divider-t { padding-top:12px; }
+      
+      .terminal { border-radius:6px; }
+      .terminal-bar { font-size:.65rem; padding:6px 10px; }
+      pre { font-size:.65rem; line-height:1.5; }
+      
+      footer { padding:24px 12px; margin-top:32px; font-size:.7rem; }
+      
+      .icon-lg { width:18px; height:18px; }
+      .icon-md { width:14px; height:14px; }
+      .icon-sm { width:12px; height:12px; }
+      
+      .badge { padding:2px 6px; font-size:.6rem; }
     }
 
     /* ── Spacing ────────────────────────────────────────── */
@@ -154,11 +275,17 @@
       -webkit-backdrop-filter:blur(16px);
       border-radius:12px;
       transition:border-color .25s, box-shadow .25s, transform .2s;
+      -webkit-tap-highlight-color:transparent;
     }
     .glass:hover {
       border-color:rgba(56,189,248,.28);
       box-shadow:0 0 32px rgba(56,189,248,.07), 0 8px 32px rgba(0,0,0,.4);
       transform:translateY(-2px);
+    }
+    @media(max-width:767px) {
+      .glass:active {
+        transform:translateY(0);
+      }
     }
 
     /* ── Stat number ────────────────────────────────────── */
@@ -210,7 +337,7 @@
     /* ── Button ─────────────────────────────────────────── */
     .btn {
       display:inline-flex; align-items:center; justify-content:center; gap:6px;
-      padding:6px 14px;
+      padding:8px 16px;
       border:1px solid rgba(56,189,248,.35);
       border-radius:6px;
       color:var(--sky);
@@ -223,6 +350,8 @@
       cursor:pointer;
       font-family:inherit;
       transition:background .2s, border-color .2s, box-shadow .2s;
+      min-height:44px;
+      min-width:44px;
     }
     .btn:hover {
       background:rgba(56,189,248,.1);
@@ -274,17 +403,19 @@
       max-width:1200px; margin:0 auto; padding:24px 20px;
       display:flex; align-items:center; justify-content:space-between;
     }
-    nav a { color:#64748b; text-decoration:none; font-size:0.95rem; transition:color .2s; }
-    nav a:hover { color:var(--sky); }
+    nav a { color:#64748b; text-decoration:none; font-size:0.95rem; transition:color .2s; padding:4px 8px; border-radius:4px; }
+    nav a:hover { color:var(--sky); background:rgba(56,189,248,.08); }
 
     /* ── Social link row ────────────────────────────────── */
     .social-row {
       display:flex; align-items:center; gap:12px;
-      padding:10px;
+      padding:12px;
       border-radius:8px;
       border:1px solid #1e293b;
       text-decoration:none;
       transition:border-color .2s, background .2s;
+      min-height:44px;
+      -webkit-tap-highlight-color:transparent;
     }
     .social-row:hover { border-color:rgba(56,189,248,.3); background:rgba(56,189,248,.05); }
     .social-row span  { font-size:.75rem; color:#94a3b8; transition:color .2s; }
@@ -533,7 +664,17 @@
     </div>
   </div>
 
-  <!-- ROW 2 — Terminal | Contact -->
+  <!-- ROW 2 — Projects -->
+  <div id="projects">
+    <div class="flex items-center gap-3 mb-5 fade-up d2">
+      <i data-lucide="folder-git-2" class="icon-lg text-sky"></i>
+      <h2 class="font-syne font-bold text-lg" style="color:#fff">Featured Projects</h2>
+      <div class="divider-h"></div>
+    </div>
+    <div class="grid-3" id="project-grid"></div>
+  </div>
+
+  <!-- ROW 3 — Terminal | Contact -->
   <div class="grid-5">
 
     <div class="terminal fade-up d4">
@@ -565,16 +706,6 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- ROW 3 — Projects -->
-  <div id="projects">
-    <div class="flex items-center gap-3 mb-5 fade-up d2">
-      <i data-lucide="folder-git-2" class="icon-lg text-sky"></i>
-      <h2 class="font-syne font-bold text-lg" style="color:#fff">Featured Projects</h2>
-      <div class="divider-h"></div>
-    </div>
-    <div class="grid-3" id="project-grid"></div>
   </div>
 
 </main>
